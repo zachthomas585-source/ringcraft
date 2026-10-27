@@ -1,0 +1,784 @@
+/* Ringcraft: ring canvas, red corner for punches, blue corner for the engine,
+   championship gold for body shots. Fight-poster numerals carry the scorecard. */
+
+:root {
+  --canvas: #edf0f3;
+  --surface: #ffffff;
+  --surface-2: #e2e7ed;
+  --ink: #1b2333;
+  --ink-soft: #46526a;
+  --muted: #687488;
+  --line: #cbd2dc;
+  --red: #c8102e;
+  --blue: #1f4fa8;
+  --gold: #b48a12;
+  --missed: #b3bcc8;
+  --on-red: #ffffff;
+  --display: var(--font-display), Impact, 'Arial Narrow Bold', sans-serif;
+  --body: var(--font-body), system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #0f1726;
+    --surface: #152036;
+    --surface-2: #1c2944;
+    --ink: #e8ecf3;
+    --ink-soft: #c0c9d7;
+    --muted: #8f9bb1;
+    --line: #2b3a57;
+    --red: #ff5468;
+    --blue: #7ea6ff;
+    --gold: #e3bf4d;
+    --missed: #44516b;
+    --on-red: #0f1726;
+    color-scheme: dark;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.25rem clamp(1rem, 3vw, 2rem) 3rem;
+}
+
+/* Masthead */
+
+.masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid var(--ink);
+}
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--display);
+  font-size: 1.85rem;
+  line-height: 1;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* The red corner pad. */
+.wordmark::before {
+  content: '';
+  width: 0.62em;
+  height: 0.62em;
+  background: var(--red);
+  border-radius: 2px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.btn {
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.2;
+  padding: 0.55rem 0.9rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.btn-quiet {
+  border-color: transparent;
+}
+
+.btn-primary {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--on-red);
+  font-size: 1rem;
+  padding: 0.7rem 1.2rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--red);
+  filter: brightness(1.08);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.link {
+  font: inherit;
+  font-weight: 600;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+/* Intro */
+
+.intro {
+  padding: clamp(2rem, 6vw, 3.75rem) 0 1.75rem;
+}
+
+.intro h1 {
+  max-width: 14ch;
+  margin: 0 0 1rem;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(2.75rem, 7.5vw, 5.25rem);
+  line-height: 0.95;
+  text-wrap: balance;
+}
+
+.intro p {
+  max-width: 36rem;
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--ink-soft);
+}
+
+/* Sections */
+
+main > section,
+.analysis {
+  margin-top: 2.75rem;
+}
+
+h2 {
+  margin: 0 0 0.85rem;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.9rem;
+  line-height: 1.05;
+}
+
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.85rem;
+}
+
+.section-head h2 {
+  margin: 0;
+}
+
+.sample-note,
+.notice {
+  margin: 0 0 0.5rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.sample-note {
+  background: var(--surface-2);
+}
+
+.notice {
+  margin-top: 0.75rem;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+}
+
+.notice-error {
+  border-color: var(--red);
+  color: var(--red);
+  font-weight: 600;
+}
+
+.hint,
+.empty {
+  margin: 0.6rem 0 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.empty {
+  font-size: 1rem;
+}
+
+/* Session fields */
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  align-items: end;
+  gap: 0.85rem 1rem;
+}
+
+.field.wide {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 720px) {
+  .field.wide {
+    grid-column: span 2;
+  }
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 4px;
+}
+
+.field input:focus-visible,
+.field select:focus-visible {
+  outline-offset: 0;
+  border-color: var(--blue);
+}
+
+/* Scorecard */
+
+.scorecard-wrap {
+  overflow-x: auto;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+
+.scorecard {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.scorecard th,
+.scorecard td {
+  padding: 0;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.scorecard .rowhead {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 12.5rem;
+  padding: 0.45rem 0.9rem;
+  text-align: left;
+  font-size: 0.92rem;
+  font-weight: 600;
+  white-space: nowrap;
+  background: var(--surface);
+  border-right: 2px solid var(--ink);
+}
+
+.scorecard thead th {
+  border-bottom: 2px solid var(--ink);
+}
+
+.scorecard thead .rowhead {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.round-head {
+  position: relative;
+  min-width: 4.5rem;
+  padding: 0.55rem 0.4rem 0.4rem;
+}
+
+.round-number {
+  font-family: var(--display);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.remove {
+  position: absolute;
+  top: 0.15rem;
+  right: 0.15rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
+  font: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--muted);
+  background: none;
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+@media (hover: hover) {
+  .round-head .remove {
+    opacity: 0;
+  }
+
+  .round-head:hover .remove {
+    opacity: 0.55;
+  }
+}
+
+.round-head .remove:hover,
+.round-head .remove:focus-visible {
+  color: var(--red);
+  background: var(--surface-2);
+  opacity: 1;
+}
+
+.scorecard .group .rowhead,
+.scorecard .group td {
+  padding: 0.3rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--surface-2);
+}
+
+.scorecard input,
+.scorecard select {
+  width: 100%;
+  min-width: 4.5rem;
+  padding: 0.55rem 0.35rem;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.scorecard select {
+  font-size: 0.86rem;
+  text-align-last: center;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+.scorecard input::placeholder {
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.scorecard input:focus-visible,
+.scorecard select:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: -2px;
+  background: var(--surface-2);
+}
+
+.scorecard .total {
+  min-width: 5.25rem;
+  padding: 0.55rem 0.6rem;
+  font-weight: 700;
+  background: var(--surface-2);
+  border-left: 2px solid var(--ink);
+}
+
+.scorecard thead .total-head {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.15rem;
+}
+
+.scorecard tfoot td {
+  padding: 0.5rem 0.4rem;
+  font-weight: 600;
+}
+
+.scorecard tfoot tr:first-child > * {
+  border-top: 2px solid var(--ink);
+}
+
+.scorecard tfoot tr:last-child > * {
+  border-bottom: 0;
+}
+
+/* The landed row: big fight-poster numerals, warmer the more you landed. */
+.scorecard tr.landed td {
+  padding: 0.65rem 0.4rem 0.55rem;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--red);
+  background: color-mix(in srgb, var(--red) var(--heat, 0%), transparent);
+}
+
+.scorecard tr.landed td.total {
+  background: var(--surface-2);
+}
+
+.scorecard tr.landed .rowhead {
+  font-size: 1rem;
+}
+
+/* Analysis */
+
+.analysis {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 2.75rem;
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  .analysis {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.insights {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 2px solid var(--ink);
+}
+
+.insight {
+  padding: 0.95rem 0 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.tag::before {
+  content: '';
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.tone-fix .tag {
+  color: var(--red);
+}
+
+.tone-watch .tag {
+  color: var(--gold);
+}
+
+.tone-good .tag {
+  color: var(--blue);
+}
+
+.insight h3 {
+  margin: 0.2rem 0 0.25rem;
+  font-size: 1.08rem;
+  line-height: 1.3;
+}
+
+.insight p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+/* AI coach */
+
+.coach-panel {
+  padding: 1.35rem 1.35rem 1.5rem;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+}
+
+.coach-intro {
+  max-width: 52ch;
+  margin: 0 0 1.1rem;
+  color: var(--ink-soft);
+}
+
+.coach-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.coach-actions .hint {
+  margin: 0;
+}
+
+.error {
+  margin: 1rem 0 0;
+  color: var(--red);
+  font-weight: 600;
+}
+
+.stale {
+  margin: 1rem 0 0;
+  padding: 0.55rem 0.8rem;
+  font-size: 0.92rem;
+  background: var(--surface-2);
+  border-radius: 4px;
+}
+
+.advice {
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--line);
+  animation: reveal 0.45s ease-out;
+}
+
+.advice h4 {
+  margin: 1.35rem 0 0.4rem;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.35rem;
+  line-height: 1.1;
+}
+
+.advice h4:first-child {
+  margin-top: 0;
+}
+
+.advice p {
+  max-width: 64ch;
+  margin: 0.4rem 0;
+}
+
+.advice ul,
+.advice ol {
+  margin: 0.25rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.advice li {
+  max-width: 62ch;
+  margin: 0.35rem 0;
+}
+
+.advice li::marker {
+  color: var(--red);
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .advice {
+    animation: none;
+  }
+}
+
+/* Charts */
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr));
+  gap: 2rem 2.25rem;
+}
+
+.chart {
+  margin: 0;
+}
+
+.chart h3 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.chart figcaption p {
+  margin: 0.1rem 0 0.6rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart .grid line {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.chart text {
+  fill: var(--muted);
+  font-family: var(--body);
+  font-size: 10px;
+}
+
+.chart .xlabel {
+  fill: var(--ink-soft);
+  font-weight: 600;
+}
+
+.chart .value {
+  fill: var(--ink);
+  font-weight: 600;
+}
+
+.bar-head {
+  fill: var(--red);
+}
+
+.bar-body {
+  fill: var(--gold);
+}
+
+.bar-missed {
+  fill: var(--missed);
+}
+
+.bar-cost {
+  fill: var(--blue);
+}
+
+.line-avg {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+
+.line-max {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+  opacity: 0.5;
+}
+
+.dot-avg {
+  fill: var(--blue);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+  margin-top: 0.55rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+}
+
+.legend span::before {
+  content: '';
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.35rem;
+  vertical-align: -1px;
+  border-radius: 2px;
+  background: var(--c);
+}
+
+.legend .dashed::before {
+  height: 0;
+  border-top: 2px dashed var(--c);
+  background: none;
+  vertical-align: 3px;
+  opacity: 0.6;
+}
+
+.footer {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  font-size: 0.86rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
+@media (max-width: 560px) {
+  .wordmark {
+    font-size: 1.6rem;
+  }
+
+  .btn {
+    font-size: 0.86rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .scorecard .rowhead {
+    min-width: 9.5rem;
+    font-size: 0.85rem;
+    white-space: normal;
+  }
+
+  .scorecard tr.landed td {
+    font-size: 2rem;
+  }
+}
